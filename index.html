@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tool Unlock THBC</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        select, input { width: 100%; padding: 8px; margin-top: 5px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer; width: 100%; }
+        #status { margin-top: 15px; font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+    <h2>🔓 Tool Mở THBC 35 Tỉnh</h2>
+    <div class="form-group">
+        <label>Chọn Tỉnh:</label>
+        <select id="province">
+          <option value="THBC_MLNS.SGD.GOV.VN">SGD</option>
+          <option value="THBC_MLNS.HAN.GOV.VN">HÀ NỘI</option>
+          <option value="THBC_MLNS.CBA.GOV.VN">CAO BẰNG</option>
+          <option value="THBC_MLNS.TQU.GOV.VN">TUYÊN QUANG [TQ+HGiang]</option>
+          <option value="THBC_MLNS.DBI.GOV.VN">ĐIỆN BIÊN</option>
+          <option value="THBC_MLNS.LCH.GOV.VN">LAI CHÂU</option>
+          <option value="THBC_MLNS.SLA.GOV.VN">SƠN LA</option>
+          <option value="THBC_MLNS.YBA.GOV.VN">LÀO CAI [LC+YBai]</option>
+          <option value="THBC_MLNS.TNG.GOV.VN">THÁI NGUYÊN [TN+BCan]</option>
+          <option value="THBC_MLNS.LSO.GOV.VN">LẠNG SƠN</option>
+          <option value="THBC_MLNS.QNI.GOV.VN">QUẢNG NINH</option>
+          <option value="THBC_MLNS.BGI.GOV.VN">BẮC NINH [BN+BGiang]</option>
+          <option value="THBC_MLNS.PTH.GOV.VN">PHÚ THỌ [PT+VP+HBinh]</option>
+          <option value="THBC_MLNS.HPH.GOV.VN">HẢI PHÒNG [HP+HDuong]</option>
+          <option value="THBC_MLNS.HYE.GOV.VN">HƯNG YÊN [HY+TBinh]</option>
+          <option value="THBC_MLNS.NBI.GOV.VN">NINH BÌNH [NB+NĐinh+HNam]</option>
+          <option value="THBC_MLNS.THO.GOV.VN">THANH HÓA</option>
+          <option value="THBC_MLNS.NAN.GOV.VN">NGHỆ AN</option>
+          <option value="THBC_MLNS.HTI.GOV.VN">HÀ TĨNH</option>
+          <option value="THBC_MLNS.QBI.GOV.VN">QUẢNG TRỊ [QBinh+QTri]</option>
+          <option value="THBC_MLNS.HUE.GOV.VN">HUẾ</option>
+          <option value="THBC_MLNS.DAN.GOV.VN">ĐÀ NẴNG [ĐN+QNam]</option>
+          <option value="THBC_MLNS.QNG.GOV.VN">QUẢNG NGÃI [QN+KTum]</option>
+          <option value="THBC_MLNS.BDI.GOV.VN">GIA LAI [GL+BĐinh]</option>
+          <option value="THBC_MLNS.KHO.GOV.VN">KHÁNH HÒA [KH+NThuan]</option>
+          <option value="THBC_MLNS.DLA.GOV.VN">ĐĂK LĂC [ĐL+PYen]</option>
+          <option value="THBC_MLNS.LDO.GOV.VN">LÂM ĐỒNG [LĐ+BThuan+ĐNong]</option>
+          <option value="THBC_MLNS.DON.GOV.VN">ĐỒNG NAI [ĐN+BPhuoc]</option>
+          <option value="THBC_MLNS.HCM.GOV.VN">HCM [HCM+BD+BRVT]</option>
+          <option value="THBC_MLNS.LAN.GOV.VN">TÂY NINH [TN+LAn]</option>
+          <option value="THBC_MLNS.TGI.GOV.VN">ĐỒNG THÁP [ĐT+TGiang]</option>
+          <option value="THBC_MLNS.VLO.GOV.VN">VĨNH LONG [VL+BTre+TVinh]</option>
+          <option value="THBC_MLNS.KGI.GOV.VN">AN GIANG [AG+KGiang]</option>
+          <option value="THBC_MLNS.CTH.GOV.VN">CẦN THƠ [CT+STrang+HGiang]</option>
+          <option value="THBC_MLNS.CMA.GOV.VN">CÀ MAU [CM+BL]</option>
+      </select>
+    </div>
+    <div class="form-group">
+        <label>Mã Kho bạc (1167):</label>
+        <input type="text" id="kbCode" placeholder="Ví dụ: 1167">
+    </div>
+    <div class="form-group">
+        <label>Từ ngày:</label>
+        <input type="date" id="startDate">
+    </div>
+    <div class="form-group">
+        <label>Đến ngày:</label>
+        <input type="date" id="endDate">
+    </div>
+    <button onclick="submitTask()">Mở THBC</button>
+    <div id="status"></div>
+
+    <script>
+        const GAS_URL = "URL_APPS_SCRIPT_CUA_BAN";
+
+        async function submitTask() {
+            const btn = document.querySelector('button');
+            const statusDiv = document.getElementById('status');
+            btn.disabled = true;
+            statusDiv.innerText = "⏳ Đang gửi yêu cầu...";
+
+            const payload = {
+                province: document.getElementById('province').selectedOptions[0].text,
+                db: document.getElementById('province').value,
+                kbCode: document.getElementById('kbCode').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value
+            };
+
+            const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await response.json();
+            
+            if(result.ticketId) {
+                statusDiv.innerText = "✅ Đã nhận Ticket: " + result.ticketId + ". Đang chờ Python thực thi...";
+                checkStatus(result.ticketId);
+            }
+        }
+
+        async function checkStatus(id) {
+            const timer = setInterval(async () => {
+                const res = await fetch(GAS_URL + "?ticketId=" + id);
+                const data = await res.json();
+                if(data.status === "DONE") {
+                    document.getElementById('status').innerText = "🎉 THÀNH CÔNG: " + data.message;
+                    document.querySelector('button').disabled = false;
+                    clearInterval(timer);
+                } else if (data.status === "ERROR") {
+                    document.getElementById('status').innerText = "❌ LỖI: " + data.message;
+                    document.querySelector('button').disabled = false;
+                    clearInterval(timer);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
