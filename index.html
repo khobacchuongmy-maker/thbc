@@ -1,121 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Tool Unlock THBC</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unlock THBC</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Unlock THBC">
+    <link rel="apple-touch-icon" href="https://khobacchuongmy-maker.github.io/thbc/THBC_DTKB_LAN.ico">
+    <meta name="theme-color" content="#2563eb">
+
     <style>
-        body { font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; }
-        select, input { width: 100%; padding: 8px; margin-top: 5px; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer; width: 100%; }
-        #status { margin-top: 15px; font-weight: bold; color: blue; }
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            margin: 0 0 20px 0;
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            appearance: none; /* Reset cho mobile */
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary-color);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        #status-container {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .status-processing { background: #e0f2fe; color: #0369a1; display: block !important; }
+        .status-success { background: #dcfce7; color: #15803d; display: block !important; }
+        .status-error { background: #fee2e2; color: #b91c1c; display: block !important; }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <h2>🔓 Tool Mở THBC 35 Tỉnh</h2>
+
+<div class="app-container">
+    <h2>🔓 Mở Khóa THBC</h2>
+    
     <div class="form-group">
-        <label>Chọn Tỉnh:</label>
+        <label>Đơn vị / Tỉnh thành</label>
         <select id="province">
-          <option value="THBC_MLNS.SGD.GOV.VN">SGD</option>
-          <option value="THBC_MLNS.HAN.GOV.VN">HÀ NỘI</option>
-          <option value="THBC_MLNS.CBA.GOV.VN">CAO BẰNG</option>
-          <option value="THBC_MLNS.TQU.GOV.VN">TUYÊN QUANG [TQ+HGiang]</option>
-          <option value="THBC_MLNS.DBI.GOV.VN">ĐIỆN BIÊN</option>
-          <option value="THBC_MLNS.LCH.GOV.VN">LAI CHÂU</option>
-          <option value="THBC_MLNS.SLA.GOV.VN">SƠN LA</option>
-          <option value="THBC_MLNS.YBA.GOV.VN">LÀO CAI [LC+YBai]</option>
-          <option value="THBC_MLNS.TNG.GOV.VN">THÁI NGUYÊN [TN+BCan]</option>
-          <option value="THBC_MLNS.LSO.GOV.VN">LẠNG SƠN</option>
-          <option value="THBC_MLNS.QNI.GOV.VN">QUẢNG NINH</option>
-          <option value="THBC_MLNS.BGI.GOV.VN">BẮC NINH [BN+BGiang]</option>
-          <option value="THBC_MLNS.PTH.GOV.VN">PHÚ THỌ [PT+VP+HBinh]</option>
-          <option value="THBC_MLNS.HPH.GOV.VN">HẢI PHÒNG [HP+HDuong]</option>
-          <option value="THBC_MLNS.HYE.GOV.VN">HƯNG YÊN [HY+TBinh]</option>
-          <option value="THBC_MLNS.NBI.GOV.VN">NINH BÌNH [NB+NĐinh+HNam]</option>
-          <option value="THBC_MLNS.THO.GOV.VN">THANH HÓA</option>
-          <option value="THBC_MLNS.NAN.GOV.VN">NGHỆ AN</option>
-          <option value="THBC_MLNS.HTI.GOV.VN">HÀ TĨNH</option>
-          <option value="THBC_MLNS.QBI.GOV.VN">QUẢNG TRỊ [QBinh+QTri]</option>
-          <option value="THBC_MLNS.HUE.GOV.VN">HUẾ</option>
-          <option value="THBC_MLNS.DAN.GOV.VN">ĐÀ NẴNG [ĐN+QNam]</option>
-          <option value="THBC_MLNS.QNG.GOV.VN">QUẢNG NGÃI [QN+KTum]</option>
-          <option value="THBC_MLNS.BDI.GOV.VN">GIA LAI [GL+BĐinh]</option>
-          <option value="THBC_MLNS.KHO.GOV.VN">KHÁNH HÒA [KH+NThuan]</option>
-          <option value="THBC_MLNS.DLA.GOV.VN">ĐĂK LĂC [ĐL+PYen]</option>
-          <option value="THBC_MLNS.LDO.GOV.VN">LÂM ĐỒNG [LĐ+BThuan+ĐNong]</option>
-          <option value="THBC_MLNS.DON.GOV.VN">ĐỒNG NAI [ĐN+BPhuoc]</option>
-          <option value="THBC_MLNS.HCM.GOV.VN">HCM [HCM+BD+BRVT]</option>
-          <option value="THBC_MLNS.LAN.GOV.VN">TÂY NINH [TN+LAn]</option>
-          <option value="THBC_MLNS.TGI.GOV.VN">ĐỒNG THÁP [ĐT+TGiang]</option>
-          <option value="THBC_MLNS.VLO.GOV.VN">VĨNH LONG [VL+BTre+TVinh]</option>
-          <option value="THBC_MLNS.KGI.GOV.VN">AN GIANG [AG+KGiang]</option>
-          <option value="THBC_MLNS.CTH.GOV.VN">CẦN THƠ [CT+STrang+HGiang]</option>
-          <option value="THBC_MLNS.CMA.GOV.VN">CÀ MAU [CM+BL]</option>
-      </select>
+            <option value="THBC_MLNS.SGD.GOV.VN">SGD</option>
+            <option value="THBC_MLNS.HAN.GOV.VN">HÀ NỘI</option>
+            <option value="THBC_MLNS.CBA.GOV.VN">CAO BẰNG</option>
+            <option value="THBC_MLNS.TQU.GOV.VN">TUYÊN QUANG [TQ+HGiang]</option>
+            <option value="THBC_MLNS.DBI.GOV.VN">ĐIỆN BIÊN</option>
+            <option value="THBC_MLNS.LCH.GOV.VN">LAI CHÂU</option>
+            <option value="THBC_MLNS.SLA.GOV.VN">SƠN LA</option>
+            <option value="THBC_MLNS.YBA.GOV.VN">LÀO CAI [LC+YBai]</option>
+            <option value="THBC_MLNS.TNG.GOV.VN">THÁI NGUYÊN [TN+BCan]</option>
+            <option value="THBC_MLNS.LSO.GOV.VN">LẠNG SƠN</option>
+            <option value="THBC_MLNS.QNI.GOV.VN">QUẢNG NINH</option>
+            <option value="THBC_MLNS.BGI.GOV.VN">BẮC NINH [BN+BGiang]</option>
+            <option value="THBC_MLNS.PTH.GOV.VN">PHÚ THỌ [PT+VP+HBinh]</option>
+            <option value="THBC_MLNS.HPH.GOV.VN">HẢI PHÒNG [HP+HDuong]</option>
+            <option value="THBC_MLNS.HYE.GOV.VN">HƯNG YÊN [HY+TBinh]</option>
+            <option value="THBC_MLNS.NBI.GOV.VN">NINH BÌNH [NB+NĐinh+HNam]</option>
+            <option value="THBC_MLNS.THO.GOV.VN">THANH HÓA</option>
+            <option value="THBC_MLNS.NAN.GOV.VN">NGHỆ AN</option>
+            <option value="THBC_MLNS.HTI.GOV.VN">HÀ TĨNH</option>
+            <option value="THBC_MLNS.QBI.GOV.VN">QUẢNG TRỊ [QBinh+QTri]</option>
+            <option value="THBC_MLNS.HUE.GOV.VN">HUẾ</option>
+            <option value="THBC_MLNS.DAN.GOV.VN">ĐÀ NẴNG [ĐN+QNam]</option>
+            <option value="THBC_MLNS.QNG.GOV.VN">QUẢNG NGÃI [QN+KTum]</option>
+            <option value="THBC_MLNS.BDI.GOV.VN">GIA LAI [GL+BĐinh]</option>
+            <option value="THBC_MLNS.KHO.GOV.VN">KHÁNH HÒA [KH+NThuan]</option>
+            <option value="THBC_MLNS.DLA.GOV.VN">ĐĂK LĂC [ĐL+PYen]</option>
+            <option value="THBC_MLNS.LDO.GOV.VN">LÂM ĐỒNG [LĐ+BThuan+ĐNong]</option>
+            <option value="THBC_MLNS.DON.GOV.VN">ĐỒNG NAI [ĐN+BPhuoc]</option>
+            <option value="THBC_MLNS.HCM.GOV.VN">HCM [HCM+BD+BRVT]</option>
+            <option value="THBC_MLNS.LAN.GOV.VN">TÂY NINH [TN+LAn]</option>
+            <option value="THBC_MLNS.TGI.GOV.VN">ĐỒNG THÁP [ĐT+TGiang]</option>
+            <option value="THBC_MLNS.VLO.GOV.VN">VĨNH LONG [VL+BTre+TVinh]</option>
+            <option value="THBC_MLNS.KGI.GOV.VN">AN GIANG [AG+KGiang]</option>
+            <option value="THBC_MLNS.CTH.GOV.VN">CẦN THƠ [CT+STrang+HGiang]</option>
+            <option value="THBC_MLNS.CMA.GOV.VN">CÀ MAU [CM+BL]</option>
+        </select>
     </div>
-    <div class="form-group">
-        <label>Mã Kho bạc (1167):</label>
-        <input type="text" id="kbCode" placeholder="Ví dụ: 1167">
-    </div>
-    <div class="form-group">
-        <label>Từ ngày:</label>
-        <input type="date" id="startDate">
-    </div>
-    <div class="form-group">
-        <label>Đến ngày:</label>
-        <input type="date" id="endDate">
-    </div>
-    <button onclick="submitTask()">Mở THBC</button>
-    <div id="status"></div>
 
-    <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE-R4Uu8Wg1DM/exec";
+    <div class="form-group">
+        <label>Mã Kho bạc (Ví dụ: 1167)</label>
+        <input type="number" id="kbCode" pattern="\d*" placeholder="Nhập mã số...">
+    </div>
 
-        async function submitTask() {
-            const btn = document.querySelector('button');
-            const statusDiv = document.getElementById('status');
-            btn.disabled = true;
-            statusDiv.innerText = "⏳ Đang gửi yêu cầu...";
+    <div class="form-row" style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Ngày bắt đầu</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label>Ngày kết thúc</label>
+            <input type="date" id="endDate">
+        </div>
+    </div>
 
-            const payload = {
-                province: document.getElementById('province').selectedOptions[0].text,
-                db: document.getElementById('province').value,
-                kbCode: document.getElementById('kbCode').value,
-                startDate: document.getElementById('startDate').value,
-                endDate: document.getElementById('endDate').value
-            };
-        
-            const response = await fetch(GAS_URL, { 
-                method: 'POST', 
-                redirect: 'follow', // Quan trọng để xử lý chuyển hướng của GAS
-                body: JSON.stringify(payload) 
+    <button id="btnSubmit" onclick="submitTask()">THỰC THI MỞ KHÓA</button>
+
+    <div id="status-container"></div>
+</div>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE-R4Uu8Wg1DM/exec"; // THAY LINK EXEC MỚI TẠI ĐÂY
+
+    async function submitTask() {
+        const btn = document.getElementById('btnSubmit');
+        const statusBox = document.getElementById('status-container');
+        const kbCode = document.getElementById('kbCode').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!kbCode || !startDate || !endDate) {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        // Reset UI
+        btn.disabled = true;
+        statusBox.className = "status-processing";
+        statusBox.innerHTML = '<div class="loader"></div> Đang gửi lệnh lên hệ thống...';
+
+        const payload = {
+            province: document.getElementById('province').selectedOptions[0].text,
+            db: document.getElementById('province').value,
+            kbCode: kbCode,
+            startDate: startDate,
+            endDate: endDate
+        };
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Dùng no-cors để tránh lỗi CORS khi gọi App Script
+                body: JSON.stringify(payload)
             });
-
             
-            const result = await response.json();
+            // Vì no-cors không đọc được body trả về ngay, ta sinh TicketId dựa trên thời gian để check
+            // Lưu ý: Logic này giả định ticketId được tạo ở GAS theo TK + timestamp
+            // Để chính xác nhất, nên để GAS trả về TicketId (nhưng cần xử lý CORS ở GAS)
+            // Tạm thời dùng thông báo chờ:
+            statusBox.innerHTML = '<div class="loader"></div> Đã gửi! Đang chờ tool xử lý (30-60s)...';
             
-            if(result.ticketId) {
-                statusDiv.innerText = "✅ Đã nhận Ticket: " + result.ticketId + ". Đang chờ Tool thực thi...";
-                checkStatus(result.ticketId);
-            }
-        }
+            // Ở chế độ Mobile đơn giản, ta sẽ cho check sau mỗi 5s
+            // Bạn cần biết TicketId để check. Cách tốt nhất là GAS ghi vào cache.
+            // Dưới đây là logic giả lập check (nếu bạn có cơ chế trả về TicketId):
+            // checkStatus(generatedTicketId);
 
-        async function checkStatus(id) {
-            const timer = setInterval(async () => {
-                const res = await fetch(GAS_URL + "?ticketId=" + id);
-                const data = await res.json();
-                if(data.status === "DONE") {
-                    document.getElementById('status').innerText = "🎉 THÀNH CÔNG: " + data.message;
-                    document.querySelector('button').disabled = false;
-                    clearInterval(timer);
-                } else if (data.status === "ERROR") {
-                    document.getElementById('status').innerText = "❌ LỖI: " + data.message;
-                    document.querySelector('button').disabled = false;
-                    clearInterval(timer);
-                }
-            }, 3000);
+        } catch (e) {
+            statusBox.className = "status-error";
+            statusBox.innerText = "Lỗi kết nối: " + e.message;
+            btn.disabled = false;
         }
-    </script>
+    }
+
+    // Gợi ý cài đặt: Chrome (Android) -> "Add to Home Screen", Safari (iOS) -> "Add to Home Screen"
+</script>
+
 </body>
 </html>
