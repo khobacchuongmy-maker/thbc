@@ -221,53 +221,74 @@
     async function submitTask() {
         const btn = document.getElementById('btnSubmit');
         const statusBox = document.getElementById('status-container');
-        const kbCode = document.getElementById('kbCode').value;
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-
-        if (!kbCode || !startDate || !endDate) {
-            alert("Vui lòng nhập đầy đủ thông tin!");
-            return;
-        }
-
-        // Reset UI
+        // ... lấy các giá trị input ...
+    
         btn.disabled = true;
         statusBox.className = "status-processing";
-        statusBox.innerHTML = '<div class="loader"></div> Đang gửi lệnh lên hệ thống...';
-
+        statusBox.innerHTML = '<div class="loader"></div> Đang gửi lệnh...';
+    
         const payload = {
             province: document.getElementById('province').selectedOptions[0].text,
             db: document.getElementById('province').value,
-            kbCode: kbCode,
-            startDate: startDate,
-            endDate: endDate
+            kbCode: document.getElementById('kbCode').value,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value
         };
-
+    
         try {
+            // PHẢI dùng redirect: 'follow' để lấy dữ liệu sau khi Google chuyển hướng
             const response = await fetch(GAS_URL, {
                 method: 'POST',
-                //mode: 'no-cors', // Dùng no-cors để tránh lỗi CORS khi gọi App Script
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                redirect: 'follow' 
             });
             
-            // Vì no-cors không đọc được body trả về ngay, ta sinh TicketId dựa trên thời gian để check
-            // Lưu ý: Logic này giả định ticketId được tạo ở GAS theo TK + timestamp
-            // Để chính xác nhất, nên để GAS trả về TicketId (nhưng cần xử lý CORS ở GAS)
-            // Tạm thời dùng thông báo chờ:
-            statusBox.innerHTML = '<div class="loader"></div> Đã gửi! Đang chờ tool xử lý (30-60s)...';
+            const result = await response.json();
             
-            // Ở chế độ Mobile đơn giản, ta sẽ cho check sau mỗi 5s
-            // Bạn cần biết TicketId để check. Cách tốt nhất là GAS ghi vào cache.
-            // Dưới đây là logic giả lập check (nếu bạn có cơ chế trả về TicketId):
-            // checkStatus(generatedTicketId);
-
+            if (result.ticketId) {
+                statusBox.innerHTML = '<div class="loader"></div> Đã gửi! Đang chờ Python thực thi...';
+                // KÍCH HOẠT vòng lặp kiểm tra kết quả
+                pollStatus(result.ticketId);
+            } else {
+                throw new Error("Không nhận được mã Ticket");
+            }
+    
         } catch (e) {
             statusBox.className = "status-error";
-            statusBox.innerText = "Lỗi kết nối: " + e.message;
+            statusBox.innerText = "Lỗi gửi lệnh: " + e.message;
             btn.disabled = false;
         }
     }
 
+    // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
+    function pollStatus(tid) {
+        const statusBox = document.getElementById('status-container');
+        const btn = document.getElementById('btnSubmit');
+        
+        const timer = setInterval(async () => {
+            try {
+                const res = await fetch(`${GAS_URL}?ticketId=${tid}`);
+                const data = await res.json();
+                
+                console.log("Đang kiểm tra ticket:", tid, data.status);
+    
+                if (data.status === "DONE") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-success";
+                    statusBox.innerHTML = "🎉 THÀNH CÔNG: " + data.message;
+                    btn.disabled = false;
+                } else if (data.status === "ERROR") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-error";
+                    statusBox.innerHTML = "❌ LỖI: " + data.message;
+                    btn.disabled = false;
+                }
+                // Nếu là "PROCESSING" thì tiếp tục đợi vòng lặp sau
+            } catch (e) {
+                console.error("Lỗi khi kiểm tra:", e);
+            }
+        }, 3000); // 3 giây kiểm tra 1 lần
+    }
     // Gợi ý cài đặt: Chrome (Android) -> "Add to Home Screen", Safari (iOS) -> "Add to Home Screen"
 </script>
 
