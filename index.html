@@ -246,7 +246,7 @@
             const result = await response.json();
             
             if (result.ticketId) {
-                statusBox.innerHTML = '<div class="loader"></div> Đã gửi! Đang chờ Python thực thi...';
+                statusBox.innerHTML = '<div class="loader"></div> Đã gửi! Đang chờ Tool thực thi...';
                 // KÍCH HOẠT vòng lặp kiểm tra kết quả
                 pollStatus(result.ticketId);
             } else {
