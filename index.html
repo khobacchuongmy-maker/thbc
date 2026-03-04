@@ -146,10 +146,34 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        #login-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #f8fafc;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .login-card {
+            width: 90%; max-width: 350px; background: white;
+            padding: 30px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        #main-app { display: none; } /* Ẩn app chính khi chưa login */
     </style>
 </head>
 <body>
+<div id="login-screen">
+    <div class="login-card">
+        <h3 style="color: #2563eb;">🔓 ĐĂNG NHẬP</h3>
+        <input type="text" id="userInput" placeholder="Nhập tên đăng nhập..." 
+               style="width: 100%; padding: 12px; margin: 20px 0; border: 1.5px solid #e2e8f0; border-radius: 12px;">
+        <button id="btnLogin" onclick="login()" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 12px; font-weight: bold;">VÀO HỆ THỐNG</button>
+        <p id="login-msg" style="color: red; font-size: 0.8rem; margin-top: 10px;"></p>
+    </div>
+</div>
 
+<div id="main-app">
+</div>
 <div class="app-container">
     <h2>🔓 Mở Khóa THBC</h2>
     
@@ -290,6 +314,47 @@
         }, 3000); // 3 giây kiểm tra 1 lần
     }
     // Gợi ý cài đặt: Chrome (Android) -> "Add to Home Screen", Safari (iOS) -> "Add to Home Screen"
+    // Kiểm tra phiên đăng nhập khi vừa mở trang
+    window.onload = () => {
+        const session = localStorage.getItem('loginDate');
+        const today = new Date().toDateString();
+        
+        // Nếu đã login trong ngày hôm nay thì vào thẳng
+        if (localStorage.getItem('isLoggedIn') === 'true' && session === today) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+    };
+    
+    async function login() {
+        const user = document.getElementById('userInput').value;
+        const btn = document.getElementById('btnLogin');
+        const msg = document.getElementById('login-msg');
+    
+        if (!user) return;
+        btn.disabled = true;
+        msg.innerText = "⏳ Đang kiểm tra...";
+    
+        try {
+            const resp = await fetch(`${GAS_URL}?action=check_user&user=${encodeURIComponent(user)}`);
+            const data = await resp.json();
+    
+            if (data.status === "VALID") {
+                // Lưu phiên đăng nhập theo ngày
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('loginDate', new Date().toDateString());
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+            } else {
+                msg.innerText = "❌ Tên đăng nhập không đúng!";
+                btn.disabled = false;
+            }
+        } catch (e) {
+            msg.innerText = "Lỗi kết nối hệ thống!";
+            btn.disabled = false;
+        }
+    }
 </script>
 
 </body>
