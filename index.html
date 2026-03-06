@@ -283,15 +283,15 @@
 	    // Đối với UNLOCK hoặc DELETE_ONE: Cần đầy đủ thông tin
 	    if (actionType !== 'DELETE_ALL') {
 	        if (!provinceSelect.value || !kbCode || !startDate || !endDate) {
-	            alert("⚠️ VUI LÒNG ĐIỀN ĐẦY ĐỦ THÔNG TIN:\n- Chọn tỉnh thành\n- Nhập mã Kho bạc\n- Chọn ngày bắt đầu & ngày kết thúc");
+	            showLocalError("Vui lòng điền đầy đủ thông tin: Tỉnh thành, Mã KB và Ngày tháng.");
 	            return;
 	        }
 	    } else {
-	        // Đối với DELETE_ALL: Chỉ cần chọn tỉnh
 	        if (!provinceSelect.value) {
-	            alert("⚠️ Vui lòng chọn Tỉnh/Thành phố cần xóa tất cả!");
+	            showLocalError("Vui lòng chọn Tỉnh/Thành phố cần xóa tất cả.");
 	            return;
 	        }
+	        // Riêng xác nhận xóa tất cả vẫn nên dùng confirm để tránh bấm nhầm
 	        if (!confirm("🚨 CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) {
 	            return;
 	        }
