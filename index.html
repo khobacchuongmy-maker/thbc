@@ -247,9 +247,10 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE-R4Uu8Wg1DM/exec"; // THAY LINK EXEC MỚI TẠI ĐÂY
 
     async function submitTask(actionType) {
-        const btn = event.currentTarget;
-        const statusBox = document.getElementById('status-container');
-        const kbCode = document.getElementById('kbCode').value;
+        // Lấy nút bấm thực tế đang được nhấn
+		const currentBtn = event.currentTarget; 
+		const statusBox = document.getElementById('status-container');
+		const kbCode = document.getElementById('kbCode').value;
     
         // Validate
         if (actionType !== 'DELETE_ALL' && !kbCode) {
@@ -261,7 +262,7 @@
             if (!confirm("CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) return;
         }
     
-        btn.disabled = true;
+        currentBtn.disabled = true;
         statusBox.className = "status-processing";
         statusBox.innerHTML = '<div class="loader"></div> Đang gửi yêu cầu...';
     
@@ -275,18 +276,28 @@
         };
     
         try {
-            const response = await fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                redirect: 'follow'
-            });
-            const result = await response.json();
-            if (result.ticketId) pollStatus(result.ticketId, btn);
-        } catch (e) {
-            statusBox.className = "status-error";
-            statusBox.innerText = "Lỗi kết nối!";
-            btn.disabled = false;
-        }
+			const response = await fetch(GAS_URL, {
+				method: 'POST',
+				body: JSON.stringify(payload),
+				redirect: 'follow'
+			});
+			
+			const result = await response.json();
+
+			// CHÈN ĐOẠN CODE VÀO ĐÂY:
+			if (result.ticketId) {
+				pollStatus(result.ticketId, currentBtn); 
+			} else {
+				statusBox.className = "status-error";
+				statusBox.innerText = "Không nhận được TicketId từ hệ thống!";
+				currentBtn.disabled = false;
+			}
+
+		} catch (e) {
+			statusBox.className = "status-error";
+			statusBox.innerText = "Lỗi kết nối!";
+			currentBtn.disabled = false;
+		}
     }
 
     // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
