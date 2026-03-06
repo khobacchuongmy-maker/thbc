@@ -39,15 +39,15 @@
         }
 
         .app-container {
-            width: 100%;
+            width: 95%;
             max-width: 450px;
-			min-width: 320px; /* Đảm bảo chiều rộng tối thiểu */
+			min-width: 380px; /* Đảm bảo chiều rộng tối thiểu */
             background: var(--card-bg);
             padding: 24px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 			/* Giúp khung ổn định không bị giật khi các phần tử bên trong thay đổi */
-    		flex-shrink: 0;
+    		flex-shrink: 0; /* Tuyệt đối không cho co lại */
         }
 
         h2 {
@@ -133,12 +133,11 @@
             margin-top: 20px;
             padding: 15px;
             border-radius: 12px;
-            display: none;
+            display: none; /* Chỉ hiện khi có thông báo */
             text-align: center;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.4;
 			min-height: 60px; /* Giúp khung giữ chỗ sẵn cho thông báo, không bị nở ra đột ngột */
-			border: 1px solid transparent;
         }
 
         .status-processing { background: #e0f2fe; color: #0369a1; display: block !important; }
