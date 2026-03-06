@@ -281,7 +281,7 @@
                 redirect: 'follow'
             });
             const result = await response.json();
-            if (result.ticketId) pollStatus(result.ticketId);
+            if (result.ticketId) pollStatus(result.ticketId, btn);
         } catch (e) {
             statusBox.className = "status-error";
             statusBox.innerText = "Lỗi kết nối!";
@@ -290,9 +290,9 @@
     }
 
     // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
-    function pollStatus(tid) {
+    function pollStatus(tid, btn) {
         const statusBox = document.getElementById('status-container');
-        const btn = document.getElementById('btnSubmit');
+        //const btn = document.getElementById('btnSubmit');
         
         const timer = setInterval(async () => {
             try {
@@ -305,12 +305,12 @@
                     clearInterval(timer); // Dừng kiểm tra
                     statusBox.className = "status-success";
                     statusBox.innerHTML = "🎉 THÀNH CÔNG: " + data.message;
-                    btn.disabled = false;
+                    if (btn) btn.disabled = false; // Mở khóa chính xác nút đã bấm
                 } else if (data.status === "ERROR") {
                     clearInterval(timer); // Dừng kiểm tra
                     statusBox.className = "status-error";
                     statusBox.innerHTML = "❌ LỖI: " + data.message;
-                    btn.disabled = false;
+                    if (btn) btn.disabled = false; // Mở khóa chính xác nút đã bấm
                 }
                 // Nếu là "PROCESSING" thì tiếp tục đợi vòng lặp sau
             } catch (e) {
