@@ -234,14 +234,132 @@
         </div>
     </div>
 
-    <button id="btnSubmit" onclick="submitTask()">THỰC THI MỞ KHÓA</button>
+    <div class="button-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <button onclick="submitTask('UNLOCK')" id="btnSubmit" style="grid-column: span 2;">MỞ KHÓA THBC</button>
+        <button onclick="submitTask('DELETE_ONE')" style="background-color: #f59e0b;">XÓA 1 ĐƠN VỊ</button>
+        <button onclick="submitTask('DELETE_ALL')" style="background-color: #ef4444;">XÓA TẤT CẢ</button>
+    </div>
 
     <div id="status-container"></div>
 </div>
 
 <script>
-    eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('1 z="2c://2b.2a.29/28/s/27-26/25";Q P 24(){1 5=3.2(\'1h\');1 4=3.2(\'6-1i\');5.8=x;4.D="6-23";4.B=\'<E 1l="1k"></E> ĐA gửi lệq...\';1 1n={Y:3.2(\'Y\').22[0].21,20:3.2(\'Y\').j,1q:3.2(\'1q\').j,1p:3.2(\'1p\').j,1o:3.2(\'1o\').j};M{1 1m=a K(z,{1Z:\'1Y\',1X:1W.1V(1n),1U:\'1T\'});1 X=a 1m.J();9(X.W){4.B=\'<E 1l="1k"></E> Đã gửi! ĐA 1Sờ 1R Zực 1Q...\';1j(X.W)}G{1P H 1O("1Nôd qận được mã 1M")}}F(e){4.D="6-R";4.o="Lỗi gửi lệq: "+e.S;5.8=b}}P 1j(V){1 4=3.2(\'6-1i\');1 5=3.2(\'1h\');1 U=1L(Q()=>{M{1 1g=a K(`${z}?W=${V}`);1 7=a 1g.J();1e.1K("ĐA Oểm N 1J:",V,7.6);9(7.6==="1I"){1f(U);4.D="6-1H";4.B="🎉 1GÀ1F CÔ1E: "+7.S;5.8=b}G 9(7.6==="1D"){1f(U);4.D="6-R";4.B="❌ LỖI: "+7.S;5.8=b}}F(e){1e.R("Lỗi 1C Oểm N:",e)}},1B)}1A.1z=()=>{1 1c=w.1d(\'17\');1 1b=H 16().15();9(w.1d(\'19\')===\'x\'&&1c===1b){3.2(\'v-14\').u.r=\'13\';3.2(\'12-11\').u.r=\'10\'}};Q P v(){1 y=3.2(\'1y\').j;1 5=3.2(\'1x\');1 f=3.2(\'v-f\');9(!y)1w;5.8=x;f.o="⏳ ĐA Oểm N...";M{1 1a=a K(`${z}?1v=1u&y=${1t(y)}`);1 7=a 1a.J();9(7.6==="1s"){w.18(\'19\',\'x\');w.18(\'17\',H 16().15());3.2(\'v-14\').u.r=\'13\';3.2(\'12-11\').u.r=\'10\'}G{f.o="❌ Tên đăd qập 1rôd đúd!";5.8=b}}F(e){f.o="Lỗi kết nối hệ Zốd!";5.8=b}}',62,137,'|const|getElementById|document|statusBox|btn|status|data|disabled|if|await|false||ng||msg||||value|||||innerText||nh|display|||style|login|localStorage|true|user|GAS_URL|ang|innerHTML||className|div|catch|else|new||json|fetch||try|tra|ki|function|async|error|message||timer|tid|ticketId|result|province|th|block|app|main|none|screen|toDateString|Date|loginDate|setItem|isLoggedIn|resp|today|session|getItem|console|clearInterval|res|btnSubmit|container|pollStatus|loader|class|response|payload|endDate|startDate|kbCode|kh|VALID|encodeURIComponent|check_user|action|return|btnLogin|userInput|onload|window|3000|khi|ERROR|NG|NH|TH|success|DONE|ticket|log|setInterval|Ticket|Kh|Error|throw|thi|Tool|ch|follow|redirect|stringify|JSON|body|POST|method|db|text|selectedOptions|processing|submitTask|exec|R4Uu8Wg1DM|AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE|macros|com|google|script|https'.split('|'),0,{}))
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE-R4Uu8Wg1DM/exec"; // THAY LINK EXEC MỚI TẠI ĐÂY
 
+    async function submitTask(actionType) {
+        const btn = document.getElementById('btnSubmit');
+        const statusBox = document.getElementById('status-container');
+        const kbCode = document.getElementById('kbCode').value;
+    
+        // Validate
+        if (actionType !== 'DELETE_ALL' && !kbCode) {
+            alert("Vui lòng nhập mã Kho bạc!");
+            return;
+        }
+        
+        if (actionType === 'DELETE_ALL') {
+            if (!confirm("CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) return;
+        }
+    
+        btn.disabled = true;
+        statusBox.className = "status-processing";
+        statusBox.innerHTML = '<div class="loader"></div> Đang gửi yêu cầu...';
+    
+        const payload = {
+            actionType: actionType,
+            province: document.getElementById('province').selectedOptions[0].text,
+            db: document.getElementById('province').value,
+            kbCode: kbCode,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value
+        };
+    
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            });
+            const result = await response.json();
+            if (result.ticketId) pollStatus(result.ticketId);
+        } catch (e) {
+            statusBox.className = "status-error";
+            statusBox.innerText = "Lỗi kết nối!";
+            btn.disabled = false;
+        }
+    }
+
+    // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
+    function pollStatus(tid) {
+        const statusBox = document.getElementById('status-container');
+        const btn = document.getElementById('btnSubmit');
+        
+        const timer = setInterval(async () => {
+            try {
+                const res = await fetch(`${GAS_URL}?ticketId=${tid}`);
+                const data = await res.json();
+                
+                console.log("Đang kiểm tra ticket:", tid, data.status);
+    
+                if (data.status === "DONE") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-success";
+                    statusBox.innerHTML = "🎉 THÀNH CÔNG: " + data.message;
+                    btn.disabled = false;
+                } else if (data.status === "ERROR") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-error";
+                    statusBox.innerHTML = "❌ LỖI: " + data.message;
+                    btn.disabled = false;
+                }
+                // Nếu là "PROCESSING" thì tiếp tục đợi vòng lặp sau
+            } catch (e) {
+                console.error("Lỗi khi kiểm tra:", e);
+            }
+        }, 3000); // 3 giây kiểm tra 1 lần
+    }
+    // Gợi ý cài đặt: Chrome (Android) -> "Add to Home Screen", Safari (iOS) -> "Add to Home Screen"
+    // Kiểm tra phiên đăng nhập khi vừa mở trang
+    window.onload = () => {
+        const session = localStorage.getItem('loginDate');
+        const today = new Date().toDateString();
+        
+        // Nếu đã login trong ngày hôm nay thì vào thẳng
+        if (localStorage.getItem('isLoggedIn') === 'true' && session === today) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+    };
+    
+    async function login() {
+        const user = document.getElementById('userInput').value;
+        const btn = document.getElementById('btnLogin');
+        const msg = document.getElementById('login-msg');
+    
+        if (!user) return;
+        btn.disabled = true;
+        msg.innerText = "⏳ Đang kiểm tra...";
+    
+        try {
+            const resp = await fetch(`${GAS_URL}?action=check_user&user=${encodeURIComponent(user)}`);
+            const data = await resp.json();
+    
+            if (data.status === "VALID") {
+                // Lưu phiên đăng nhập theo ngày
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('loginDate', new Date().toDateString());
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+            } else {
+                msg.innerText = "❌ Tên đăng nhập không đúng!";
+                btn.disabled = false;
+            }
+        } catch (e) {
+            msg.innerText = "Lỗi kết nối hệ thống!";
+            btn.disabled = false;
+        }
+    }
 </script>
 
 </body>
