@@ -244,8 +244,122 @@
 </div>
 
 <script>
-    eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('1 H="2k://2j.2i.2h/2g/s/2f-2e/2d";W V 2c(r){1 4=3.2(\'1r\');1 6=3.2(\'5-1s\');1 q=3.2(\'q\').o;7(r!==\'1A\'&&!q){2b("2a lòa wập mã 29 bạc!");U}7(r===\'1A\'){7(!28("CẢ1p BÁO: Bạn có 1zắc 1zắn 27ốn XÓA TẤT CẢ cấu hìw tại tỉw này 15ôa?"))U}4.9=F;6.J="5-26";6.Z=\'<1y 25="24"></1y> ĐS gửi yêu cầu...\';1 1v={r:r,14:3.2(\'14\').23[0].22,21:3.2(\'14\').o,q:q,1x:3.2(\'1x\').o,1w:3.2(\'1w\').o};P{1 1u=d N(H,{20:\'1Z\',1Y:1X.1W(1v),1V:\'1U\'});1 13=d 1u.M();7(13.12)1t(13.12)}K(e){6.J="5-Y";6.v="Lỗi kết nối!";4.9=f}}V 1t(11){1 6=3.2(\'5-1s\');1 4=3.2(\'1r\');1 10=1T(W()=>{P{1 1q=d N(`${H}?12=${11}`);1 8=d 1q.M();1m.1S("ĐS Rểm Q 1R:",11,8.5);7(8.5==="1Q"){1o(10);6.J="5-1P";6.Z="🎉 1OÀ1p CÔ1N: "+8.1n;4.9=f}16 7(8.5==="1M"){1o(10);6.J="5-Y";6.Z="❌ LỖI: "+8.1n;4.9=f}}K(e){1m.Y("Lỗi 1L Rểm Q:",e)}},1K)}1J.1I=()=>{1 1k=E.1l(\'1f\');1 1j=1e 1d().1c();7(E.1l(\'1h\')===\'F\'&&1k===1j){3.2(\'D-1b\').z.x=\'1a\';3.2(\'19-18\').z.x=\'17\'}};W V D(){1 G=3.2(\'1H\').o;1 4=3.2(\'1G\');1 j=3.2(\'D-j\');7(!G)U;4.9=F;j.v="⏳ ĐS Rểm Q...";P{1 1i=d N(`${H}?1F=1E&G=${1D(G)}`);1 8=d 1i.M();7(8.5==="1C"){E.1g(\'1h\',\'F\');E.1g(\'1f\',1e 1d().1c());3.2(\'D-1b\').z.x=\'1a\';3.2(\'19-18\').z.x=\'17\'}16{j.v="❌ Tên đăa wập 15ôa đúa!";4.9=f}}K(e){j.v="Lỗi kết nối hệ 1Bốa!";4.9=f}}',62,145,'|const|getElementById|document|btn|status|statusBox|if|data|disabled|ng|||await||false||||msg|||||value||kbCode|actionType||||innerText|nh|display||style||||login|localStorage|true|user|GAS_URL||className|catch||json|fetch||try|tra|ki|ang||return|function|async||error|innerHTML|timer|tid|ticketId|result|province|kh|else|block|app|main|none|screen|toDateString|Date|new|loginDate|setItem|isLoggedIn|resp|today|session|getItem|console|message|clearInterval|NH|res|btnSubmit|container|pollStatus|response|payload|endDate|startDate|div|ch|DELETE_ALL|th|VALID|encodeURIComponent|check_user|action|btnLogin|userInput|onload|window|3000|khi|ERROR|NG|TH|success|DONE|ticket|log|setInterval|follow|redirect|stringify|JSON|body|POST|method|db|text|selectedOptions|loader|class|processing|mu|confirm|Kho|Vui|alert|submitTask|exec|R4Uu8Wg1DM|AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE|macros|com|google|script|https'.split('|'),0,{}))
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyUkDYW79nvOVwTQgW8PdgRPicl1HHS1k4yO0Cl249W6Std3lgIQikE-R4Uu8Wg1DM/exec"; // THAY LINK EXEC MỚI TẠI ĐÂY
 
+    async function submitTask(actionType) {
+        const btn = event.currentTarget;
+        const statusBox = document.getElementById('status-container');
+        const kbCode = document.getElementById('kbCode').value;
+    
+        // Validate
+        if (actionType !== 'DELETE_ALL' && !kbCode) {
+            alert("Vui lòng nhập mã Kho bạc!");
+            return;
+        }
+        
+        if (actionType === 'DELETE_ALL') {
+            if (!confirm("CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) return;
+        }
+    
+        btn.disabled = true;
+        statusBox.className = "status-processing";
+        statusBox.innerHTML = '<div class="loader"></div> Đang gửi yêu cầu...';
+    
+        const payload = {
+            actionType: actionType,
+            province: document.getElementById('province').selectedOptions[0].text,
+            db: document.getElementById('province').value,
+            kbCode: kbCode,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value
+        };
+    
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            });
+            const result = await response.json();
+            if (result.ticketId) pollStatus(result.ticketId);
+        } catch (e) {
+            statusBox.className = "status-error";
+            statusBox.innerText = "Lỗi kết nối!";
+            btn.disabled = false;
+        }
+    }
+
+    // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
+    function pollStatus(tid) {
+        const statusBox = document.getElementById('status-container');
+        const btn = document.getElementById('btnSubmit');
+        
+        const timer = setInterval(async () => {
+            try {
+                const res = await fetch(`${GAS_URL}?ticketId=${tid}`);
+                const data = await res.json();
+                
+                console.log("Đang kiểm tra ticket:", tid, data.status);
+    
+                if (data.status === "DONE") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-success";
+                    statusBox.innerHTML = "🎉 THÀNH CÔNG: " + data.message;
+                    btn.disabled = false;
+                } else if (data.status === "ERROR") {
+                    clearInterval(timer); // Dừng kiểm tra
+                    statusBox.className = "status-error";
+                    statusBox.innerHTML = "❌ LỖI: " + data.message;
+                    btn.disabled = false;
+                }
+                // Nếu là "PROCESSING" thì tiếp tục đợi vòng lặp sau
+            } catch (e) {
+                console.error("Lỗi khi kiểm tra:", e);
+            }
+        }, 3000); // 3 giây kiểm tra 1 lần
+    }
+    // Gợi ý cài đặt: Chrome (Android) -> "Add to Home Screen", Safari (iOS) -> "Add to Home Screen"
+    // Kiểm tra phiên đăng nhập khi vừa mở trang
+    window.onload = () => {
+        const session = localStorage.getItem('loginDate');
+        const today = new Date().toDateString();
+        
+        // Nếu đã login trong ngày hôm nay thì vào thẳng
+        if (localStorage.getItem('isLoggedIn') === 'true' && session === today) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+    };
+    
+    async function login() {
+        const user = document.getElementById('userInput').value;
+        const btn = document.getElementById('btnLogin');
+        const msg = document.getElementById('login-msg');
+    
+        if (!user) return;
+        btn.disabled = true;
+        msg.innerText = "⏳ Đang kiểm tra...";
+    
+        try {
+            const resp = await fetch(`${GAS_URL}?action=check_user&user=${encodeURIComponent(user)}`);
+            const data = await resp.json();
+    
+            if (data.status === "VALID") {
+                // Lưu phiên đăng nhập theo ngày
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('loginDate', new Date().toDateString());
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+            } else {
+                msg.innerText = "❌ Tên đăng nhập không đúng!";
+                btn.disabled = false;
+            }
+        } catch (e) {
+            msg.innerText = "Lỗi kết nối hệ thống!";
+            btn.disabled = false;
+        }
+    }
 </script>
 
 </body>
