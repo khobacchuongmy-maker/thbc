@@ -34,6 +34,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
+			width: 100vw; /* Cố định chiều rộng toàn màn hình */
             min-height: 100vh;
             padding: 20px;
         }
@@ -41,13 +42,13 @@
         .app-container {
             width: 100%;
             max-width: 450px;
+			min-width: 320px; /* Đảm bảo chiều rộng tối thiểu */
             background: var(--card-bg);
             padding: 24px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-			/* Thêm dòng dưới đây để ổn định chiều cao */
-		    transition: all 0.3s ease; 
-		    overflow: hidden;
+			/* Giúp khung ổn định không bị giật khi các phần tử bên trong thay đổi */
+    		flex-shrink: 0;
         }
 
         h2 {
@@ -110,10 +111,20 @@
         }
 
         button:active {
+			transform: none !important; /* Xóa bỏ hiệu ứng thu nhỏ */
 		    opacity: 0.8;
 		    background-color: #1d4ed8; /* Làm màu đậm hơn một chút khi nhấn để tạo cảm giác bấm */
 		}
 
+		/* 3. Đảm bảo nhóm nút bấm không làm thay đổi layout */
+		.button-group {
+		    display: grid;
+		    grid-template-columns: 1fr 1fr;
+		    gap: 10px;
+		    margin-top: 10px;
+		    width: 100%; /* Cố định chiều rộng nhóm nút */
+		}
+		
         button:disabled {
             background-color: #94a3b8;
             cursor: not-allowed;
@@ -252,56 +263,67 @@
 
     async function submitTask(actionType) {
         // Lấy nút bấm thực tế đang được nhấn
-		const currentBtn = event.currentTarget; 
-		const statusBox = document.getElementById('status-container');
-		const kbCode = document.getElementById('kbCode').value;
+		const currentBtn = event.currentTarget;
+	    const statusBox = document.getElementById('status-container');
+	    const provinceSelect = document.getElementById('province');
+	    const kbCode = document.getElementById('kbCode').value.trim();
+	    const startDate = document.getElementById('startDate').value;
+	    const endDate = document.getElementById('endDate').value;
     
         // Validate
-        if (actionType !== 'DELETE_ALL' && !kbCode) {
-            alert("Vui lòng nhập mã Kho bạc!");
-            return;
-        }
-        
-        if (actionType === 'DELETE_ALL') {
-            if (!confirm("CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) return;
-        }
-    
+        // 2. KIỂM TRA ĐIỀU KIỆN BẮT BUỘC (Validation)
+	    // Đối với UNLOCK hoặc DELETE_ONE: Cần đầy đủ thông tin
+	    if (actionType !== 'DELETE_ALL') {
+	        if (!provinceSelect.value || !kbCode || !startDate || !endDate) {
+	            alert("⚠️ VUI LÒNG ĐIỀN ĐẦY ĐỦ THÔNG TIN:\n- Chọn tỉnh thành\n- Nhập mã Kho bạc\n- Chọn ngày bắt đầu & ngày kết thúc");
+	            return;
+	        }
+	    } else {
+	        // Đối với DELETE_ALL: Chỉ cần chọn tỉnh
+	        if (!provinceSelect.value) {
+	            alert("⚠️ Vui lòng chọn Tỉnh/Thành phố cần xóa tất cả!");
+	            return;
+	        }
+	        if (!confirm("🚨 CẢNH BÁO: Bạn có chắc chắn muốn XÓA TẤT CẢ cấu hình tại tỉnh này không?")) {
+	            return;
+	        }
+	    }
+
+		// 3. Thực thi nếu mọi thứ đã hợp lệ
         currentBtn.disabled = true;
-        statusBox.className = "status-processing";
-        statusBox.innerHTML = '<div class="loader"></div> Đang gửi yêu cầu...';
-    
-        const payload = {
-            actionType: actionType,
-            province: document.getElementById('province').selectedOptions[0].text,
-            db: document.getElementById('province').value,
-            kbCode: kbCode,
-            startDate: document.getElementById('startDate').value,
-            endDate: document.getElementById('endDate').value
-        };
-    
-        try {
-			const response = await fetch(GAS_URL, {
-				method: 'POST',
-				body: JSON.stringify(payload),
-				redirect: 'follow'
-			});
-			
-			const result = await response.json();
-
-			// CHÈN ĐOẠN CODE VÀO ĐÂY:
-			if (result.ticketId) {
-				pollStatus(result.ticketId, currentBtn); 
-			} else {
-				statusBox.className = "status-error";
-				statusBox.innerText = "Không nhận được TicketId từ hệ thống!";
-				currentBtn.disabled = false;
-			}
-
-		} catch (e) {
-			statusBox.className = "status-error";
-			statusBox.innerText = "Lỗi kết nối!";
-			currentBtn.disabled = false;
-		}
+	    statusBox.className = "status-processing";
+	    statusBox.innerHTML = '<div class="loader"></div> Đang gửi yêu cầu...';
+	
+	    const payload = {
+	        actionType: actionType,
+	        province: provinceSelect.selectedOptions[0].text,
+	        db: provinceSelect.value,
+	        kbCode: kbCode,
+	        startDate: startDate,
+	        endDate: endDate
+	    };
+	
+	    try {
+	        const response = await fetch(GAS_URL, {
+	            method: 'POST',
+	            body: JSON.stringify(payload),
+	            redirect: 'follow'
+	        });
+	        
+	        const result = await response.json();
+	
+	        if (result.ticketId) {
+	            pollStatus(result.ticketId, currentBtn); 
+	        } else {
+	            statusBox.className = "status-error";
+	            statusBox.innerText = "❌ Không nhận được TicketId!";
+	            currentBtn.disabled = false;
+	        }
+	    } catch (e) {
+	        statusBox.className = "status-error";
+	        statusBox.innerText = "❌ Lỗi kết nối hệ thống!";
+	        currentBtn.disabled = false;
+	    }
     }
 
     // HÀM KIỂM TRA KẾT QUẢ TỰ ĐỘNG
