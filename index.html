@@ -35,8 +35,7 @@
             justify-content: center;
             align-items: flex-start;
 			width: 100vw; /* Cố định chiều rộng toàn màn hình */
-            min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
         .app-container {
@@ -136,9 +135,10 @@
             border-radius: 12px;
             display: none;
             text-align: center;
-            font-size: 0.95rem;
-            line-height: 1.4;
-			min-height: 54px; /* Giúp khung giữ chỗ sẵn cho thông báo, không bị nở ra đột ngột */
+            font-size: 0.9rem;
+            line-height: 1.5;
+			min-height: 60px; /* Giúp khung giữ chỗ sẵn cho thông báo, không bị nở ra đột ngột */
+			border: 1px solid transparent;
         }
 
         .status-processing { background: #e0f2fe; color: #0369a1; display: block !important; }
@@ -269,7 +269,15 @@
 	    const kbCode = document.getElementById('kbCode').value.trim();
 	    const startDate = document.getElementById('startDate').value;
 	    const endDate = document.getElementById('endDate').value;
-    
+		
+    	// Hàm tiện ích để hiển thị lỗi nhanh tại statusBox
+	    const showLocalError = (msg) => {
+	        statusBox.style.display = "block";
+	        statusBox.className = "status-error";
+	        statusBox.innerHTML = `⚠️ <b>Thông báo:</b><br>${msg}`;
+	        // Tự động ẩn thông báo sau 5 giây để gọn giao diện
+	        setTimeout(() => { if(statusBox.className === "status-error") statusBox.style.display = "none"; }, 5000);
+	    };
         // Validate
         // 2. KIỂM TRA ĐIỀU KIỆN BẮT BUỘC (Validation)
 	    // Đối với UNLOCK hoặc DELETE_ONE: Cần đầy đủ thông tin
